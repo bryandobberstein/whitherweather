@@ -47,6 +47,10 @@
     day: "2-digit",
     year: "numeric"
   })
+  const hourFormat = new Intl.DateTimeFormat('en-us', {
+    hour: "numeric",
+    minute: "numeric"
+  })
   const date = new Date()
 
   onMount(() => {
@@ -79,31 +83,25 @@
   <h1>Weather</h1>
   {#if loaded}
   <div id="current">
-
     <p>Temp: {currentWeather.temperature}</p>
     <p>Wind: {currentWeather.windspeed}</p>
     <p>Code: {currentWeather.weathercode}</p>
     <p>Date: {new Date().toDateString()}</p>
   </div>
   <hr />
+  {#each time as day, idx }
   <div id="daily">
-    {#each time as day, idx }
-    <div class="day">
-      <h4>{dateFormat.format(date.setDate(date.getDate() + idx))}</h4>
-      <p>Weathercode: {weathercode[idx]}</p>
-      <img src="{icons[weathercode[idx]]}" alt="">
-      <p>High: {maxTemp[idx]}</p>
-      <p>Low: {minTemp[idx]}</p>
-      <p>FeelsHigh{feelsLikeMax[idx]}</p>
-      <p>FeelsLow{feelsLikeMin[idx]}</p>
-      <p>Rise:{sunriseTime[idx]}</p>
-      <p>Set: {sunsetTime[idx]}</p>
-      <p>Precip: {totalPrecip[idx]}</p>
-      <hr>
+      <h4 id="date">{dateFormat.format(date.setDate(date.getDate() + idx))}</h4>
+      <span id="weathercode"><img src="{icons[weathercode[idx]]}" alt=""></span>
+      <span id="high">High: {maxTemp[idx]}</span>
+      <span id="low">Low: {minTemp[idx]}</span>
+      <span id="feelsHigh">FeelsHigh: {feelsLikeMax[idx]}</span>
+      <span id="feelsLow">FeelsLow: {feelsLikeMin[idx]}</span>
+      <span id="rise">Rise: {hourFormat.format(new Date(sunriseTime[idx]))}</span>
+      <span id="set">Set: {hourFormat.format(new Date(sunsetTime[idx]))}</span>
+      <span id="precip">Precip: {totalPrecip[idx]}</span>
     </div>
-      
     {/each}
-  </div>
   {/if}
 </main>
 
@@ -112,8 +110,39 @@
     display: flex;
     flex-direction: row;
   }
-  img {
+  /* img {
     height: 32px;
     width: 32px;
+  } */
+  #daily {
+    display: grid;
+    grid-template-areas: "date date date"
+                          "code high low"
+                          "code fhigh flow"
+                          "code rise set";
+  }
+  #date{
+    grid-area: date;
+  }
+  #weathercode {
+    grid-area: code;
+  }
+  #high {
+    grid-area: high;
+  }
+  #low {
+    grid-area: low;
+  }
+  #feelsHigh {
+    grid-area: fhigh;
+  }
+  #feelsLow {
+    grid-area: flow;
+  }
+  #rise {
+    grid-area: rise;
+  }
+  #set {
+    grid-area: set;
   }
 </style>
