@@ -84,7 +84,7 @@
 </script>
 
 <main>
-  <h1 id="header">Weather</h1>
+  <p id="header">Weather</p>
   {#if loaded}
     <div id="current">
       <p id="temp">
@@ -183,7 +183,9 @@
     grid-area: time;
   }
   #daily {
-    border-bottom: 3px solid #000;
+    border: 3px solid #000;
+    margin-top: 10px;
+    padding: 5px;
     display: grid;
     grid-template-areas:
       "date date date"
