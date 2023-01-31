@@ -208,6 +208,7 @@
   #date {
     grid-area: date;
     justify-self: center;
+    margin-top: 0;
   }
   #weathercode {
     grid-area: code;
