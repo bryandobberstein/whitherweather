@@ -95,43 +95,47 @@
       <p id="icon"><img src={icons[currentWeather.weathercode]} alt="" /></p>
       <p id="time">{hourFormat.format(date.setDate(date.getDate()))}</p>
     </div>
+    <div id="daily-grid">
     {#each time as day, idx}
-      <div id="daily">
-        <h4 id="date">
-          {dateFormat.format(date.setDate(date.getDate() + idx))}
-        </h4>
-        <span id="weathercode"
-          ><img src={icons[weathercode[idx]]} alt="" /></span
-        >
-        <span id="high"
-          ><img
-            id="icons-small"
-            src="/icons/temperature-arrow-up-solid.svg"
-            alt=""
-          />
-          {maxTemp[idx]}°F</span
-        >
-        <span id="low"
-          ><img
-            id="icons-small"
-            src="/icons/temperature-arrow-down-solid.svg"
-            alt=""
-          />
-          {minTemp[idx]}°F</span
-        >
-        <span id="feelsHigh">Feels like: {feelsLikeMax[idx]}°F</span>
-        <span id="feelsLow">Feels like: {feelsLikeMin[idx]}°F</span>
-        <span id="rise"
-          ><img id="icons-small" src="/icons/sunny.svg" alt="" />
-          {hourFormat.format(new Date(sunriseTime[idx]))}</span
-        >
-        <span id="set"
-          ><img id="icons-small" src="/icons/moon-solid.svg" alt="" />
-          {hourFormat.format(new Date(sunsetTime[idx]))}</span
-        >
-        <span id="precip"><img id="icons-small" src="/icons/droplet-solid.svg" alt="" /> {totalPrecip[idx]} in</span>
-      </div>
+    {#if idx < 6}    
+    <div id="daily">
+      <h4 id="date">
+        {dateFormat.format(date.setDate(date.getDate() + idx))}
+      </h4>
+      <span id="weathercode"
+        ><img src={icons[weathercode[idx]]} alt="" /></span
+      >
+      <span id="high"
+        ><img
+          id="icons-small"
+          src="/icons/temperature-arrow-up-solid.svg"
+          alt=""
+        />
+        {maxTemp[idx]}°F</span
+      >
+      <span id="low"
+        ><img
+          id="icons-small"
+          src="/icons/temperature-arrow-down-solid.svg"
+          alt=""
+        />
+        {minTemp[idx]}°F</span
+      >
+      <span id="feelsHigh">Feels like: {feelsLikeMax[idx]}°F</span>
+      <span id="feelsLow">Feels like: {feelsLikeMin[idx]}°F</span>
+      <span id="rise"
+        ><img id="icons-small" src="/icons/sunny.svg" alt="" />
+        {hourFormat.format(new Date(sunriseTime[idx]))}</span
+      >
+      <span id="set"
+        ><img id="icons-small" src="/icons/moon-solid.svg" alt="" />
+        {hourFormat.format(new Date(sunsetTime[idx]))}</span
+      >
+      <span id="precip"><img id="icons-small" src="/icons/droplet-solid.svg" alt="" /> {totalPrecip[idx]} in</span>
+    </div>
+    {/if}
     {/each}
+  </div>
   {/if}
   {#if loadFail}
     <div id="error">Failed to load location</div>
@@ -141,7 +145,7 @@
 <style>
   main {
     display: grid;
-    width: 75vw;
+    width: 95vw;
     justify-content: center;
     align-content: center;
   }
@@ -182,9 +186,14 @@
     margin: 0;
     grid-area: time;
   }
+  #daily-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+  }
   #daily {
     border: 3px solid #000;
-    margin-top: 10px;
+    margin: 10px;
     padding: 5px;
     display: grid;
     grid-template-areas:
