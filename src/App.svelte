@@ -58,13 +58,14 @@
   onMount(() => {
     navigator.geolocation.getCurrentPosition(positionSuccess, positionError);
     function positionSuccess({ coords }) {
-      const API_URL = `https://api.open-meteo.com/v1/forecast?latitude=${coords.latitude}&longitude=${coords.longitude}&hourly=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,precipitation_sum&current_weather=true&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch&timezone=auto`;
+      const API_URL = `https://api.open-meteo.com/v1/forecast?latitude=${coords.latitude}&longitude=${coords.longitude}&hourly=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,precipitation_sum&current_weather=true&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch&timeformat=unixtime&timezone=auto`;
 
       fetch(API_URL)
         .then((response) => response.json())
         .then((data) => {
           currentWeather = data.current_weather;
           dailyWeather = data.daily;
+          console.log(currentWeather)
           time = [...dailyWeather.time];
           weathercode = [...dailyWeather.weathercode];
           maxTemp = [...dailyWeather.temperature_2m_max];
@@ -96,11 +97,10 @@
       <p id="time">{hourFormat.format(date.setDate(date.getDate()))}</p>
     </div>
     <div id="daily-grid">
-    {#each time as day, idx}
-    {#if idx < 6}    
+    {#each time as day, idx}    
     <div id="daily">
       <h4 id="date">
-        {dateFormat.format(date.setDate(date.getDate() + idx))}
+        {dateFormat.format(new Date(day * 1000))}
       </h4>
       <span id="weathercode"
         ><img src={icons[weathercode[idx]]} alt="" /></span
@@ -133,7 +133,6 @@
       >
       <span id="precip"><img id="icons-small" src="/icons/droplet-solid.svg" alt="" /> {totalPrecip[idx]} in</span>
     </div>
-    {/if}
     {/each}
   </div>
   {/if}
