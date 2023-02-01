@@ -3,6 +3,7 @@
 
   let currentWeather = {};
   let dailyWeather = {};
+  let hourlyWeather= {}
   let time = [];
   let weathercode = [];
   let maxTemp = [];
@@ -13,7 +14,7 @@
   let sunsetTime = [];
   let totalPrecip = [];
   let loaded = false;
-  let loadFail = false
+  let loadFail = false;
   const icons = {
     0: "/icons/sunny.svg",
     1: "/icons/cloud-sun.svg",
@@ -65,7 +66,7 @@
         .then((data) => {
           currentWeather = data.current_weather;
           dailyWeather = data.daily;
-          console.log(currentWeather)
+          hourlyWeather = data.hourly
           time = [...dailyWeather.time];
           weathercode = [...dailyWeather.weathercode];
           maxTemp = [...dailyWeather.temperature_2m_max];
@@ -79,7 +80,7 @@
         });
     }
     function positionError() {
-      loadFail = true
+      loadFail = true;
     }
   });
 </script>
@@ -97,44 +98,49 @@
       <p id="time">{hourFormat.format(date.setDate(date.getDate()))}</p>
     </div>
     <div id="daily-grid">
-    {#each time as day, idx}    
-    <div id="daily">
-      <h4 id="date">
-        {dateFormat.format(new Date(day * 1000))}
-      </h4>
-      <span id="weathercode"
-        ><img src={icons[weathercode[idx]]} alt="" /></span
-      >
-      <span id="high"
-        ><img
-          id="icons-small"
-          src="/icons/temperature-arrow-up-solid.svg"
-          alt=""
-        />
-        {maxTemp[idx]}°F</span
-      >
-      <span id="low"
-        ><img
-          id="icons-small"
-          src="/icons/temperature-arrow-down-solid.svg"
-          alt=""
-        />
-        {minTemp[idx]}°F</span
-      >
-      <span id="feelsHigh">Feels like: {feelsLikeMax[idx]}°F</span>
-      <span id="feelsLow">Feels like: {feelsLikeMin[idx]}°F</span>
-      <span id="rise"
-        ><img id="icons-small" src="/icons/sunny.svg" alt="" />
-        {hourFormat.format(new Date(sunriseTime[idx]))}</span
-      >
-      <span id="set"
-        ><img id="icons-small" src="/icons/moon-solid.svg" alt="" />
-        {hourFormat.format(new Date(sunsetTime[idx]))}</span
-      >
-      <span id="precip"><img id="icons-small" src="/icons/droplet-solid.svg" alt="" /> {totalPrecip[idx]} in</span>
+      {#each time as day, idx}
+        {#if idx < 6}
+          <div id="daily">
+            <h4 id="date">
+              {dateFormat.format(new Date(day * 1000))}
+            </h4>
+            <span id="weathercode"
+              ><img src={icons[weathercode[idx]]} alt="" /></span
+            >
+            <span id="high"
+              ><img
+                id="icons-small"
+                src="/icons/temperature-arrow-up-solid.svg"
+                alt=""
+              />
+              {maxTemp[idx]}°F</span
+            >
+            <span id="low"
+              ><img
+                id="icons-small"
+                src="/icons/temperature-arrow-down-solid.svg"
+                alt=""
+              />
+              {minTemp[idx]}°F</span
+            >
+            <span id="feelsHigh">Feels like: {feelsLikeMax[idx]}°F</span>
+            <span id="feelsLow">Feels like: {feelsLikeMin[idx]}°F</span>
+            <span id="rise"
+              ><img id="icons-small" src="/icons/sunny.svg" alt="" />
+              {hourFormat.format(new Date(sunriseTime[idx]))}</span
+            >
+            <span id="set"
+              ><img id="icons-small" src="/icons/moon-solid.svg" alt="" />
+              {hourFormat.format(new Date(sunsetTime[idx]))}</span
+            >
+            <span id="precip"
+              ><img id="icons-small" src="/icons/droplet-solid.svg" alt="" />
+              {totalPrecip[idx]} in</span
+            >
+          </div>
+        {/if}
+      {/each}
     </div>
-    {/each}
-  </div>
   {/if}
   {#if loadFail}
     <div id="error">Failed to load location</div>
@@ -236,10 +242,10 @@
     grid-area: set;
     margin-bottom: 5px;
   }
-  #precip{
+  #precip {
     grid-area: precip;
   }
-  #error{
+  #error {
     color: rgb(128, 2, 2);
   }
 </style>
