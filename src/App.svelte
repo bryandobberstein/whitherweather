@@ -1,19 +1,19 @@
 <script>
   import { onMount } from "svelte";
   import Current from "./Current.svelte";
+  import Daily from "./Daily.svelte";
 
   let currentWeather = {};
-  let dailyWeather = {};
   let hourlyWeather= {}
-  let time = [];
-  let weathercode = [];
-  let maxTemp = [];
-  let minTemp = [];
-  let feelsLikeMax = [];
-  let feelsLikeMin = [];
-  let sunriseTime = [];
-  let sunsetTime = [];
-  let totalPrecip = [];
+  let time
+  let weathercode
+  let temperature_2m_max
+  let temperature_2m_min
+  let apparent_temperature_max
+  let apparent_temperature_min
+  let sunrise
+  let sunset
+  let precipitation_sum
   let loaded = false;
   let loadFail = false;
   const icons = {
@@ -66,17 +66,17 @@
         .then((response) => response.json())
         .then((data) => {
           currentWeather = data.current_weather;
-          dailyWeather = data.daily;
+          console.log(data.daily)
+          time = data.daily.time
+          weathercode = data.daily.weathercode
+          temperature_2m_max = data.daily.temperature_2m_max
+          temperature_2m_min = data.daily.temperature_2m_min
+          apparent_temperature_max = data.daily.apparent_temperature_max
+          apparent_temperature_min = data.daily.apparent_temperature_min
+          sunrise = data.daily.sunrise
+          sunset = data.daily.sunset
+          precipitation_sum = data.daily.precipitation_sum
           hourlyWeather = data.hourly
-          time = [...dailyWeather.time];
-          weathercode = [...dailyWeather.weathercode];
-          maxTemp = [...dailyWeather.temperature_2m_max];
-          minTemp = [...dailyWeather.temperature_2m_min];
-          feelsLikeMax = [...dailyWeather.apparent_temperature_max];
-          feelsLikeMin = [...dailyWeather.apparent_temperature_min];
-          sunriseTime = [...dailyWeather.sunrise];
-          sunsetTime = [...dailyWeather.sunset];
-          totalPrecip = [...dailyWeather.precipitation_sum];
           loaded = true;
         });
     }
@@ -92,48 +92,18 @@
     <div id="current">
       <Current currentWeather = {currentWeather} />
     </div>
-    <div id="daily-grid">
-      {#each time as day, idx}
-        {#if idx < 6}
-          <div id="daily">
-            <h4 id="date">
-              {dateFormat.format(new Date(day * 1000))}
-            </h4>
-            <span id="weathercode"
-              ><img src={icons[weathercode[idx]]} alt="" /></span
-            >
-            <span id="high"
-              ><img
-                id="icons-small"
-                src="/icons/temperature-arrow-up-solid.svg"
-                alt=""
-              />
-              {maxTemp[idx]}°F</span
-            >
-            <span id="low"
-              ><img
-                id="icons-small"
-                src="/icons/temperature-arrow-down-solid.svg"
-                alt=""
-              />
-              {minTemp[idx]}°F</span
-            >
-            <span id="feelsHigh">Feels like: {feelsLikeMax[idx]}°F</span>
-            <span id="feelsLow">Feels like: {feelsLikeMin[idx]}°F</span>
-            <span id="rise"
-              ><img id="icons-small" src="/icons/sunny.svg" alt="" />
-              {hourFormat.format(sunriseTime[idx])}</span
-            >
-            <span id="set"
-              ><img id="icons-small" src="/icons/moon-solid.svg" alt="" />
-              {hourFormat.format(sunsetTime[idx])}</span
-            >
-            <span id="precip"
-              ><img id="icons-small" src="/icons/droplet-solid.svg" alt="" />
-              {totalPrecip[idx]} in</span
-            >
-          </div>
-        {/if}
+    <div id="daily">
+      {#each Array(6) as _, idx}
+        <Daily 
+        time={time[idx]}
+        weathercode={weathercode[idx]}
+        temperature_2m_max={temperature_2m_max[idx]}
+        temperature_2m_min={temperature_2m_min[idx]}
+        apparent_temperature_max={apparent_temperature_max[idx]}
+        apparent_temperature_min={apparent_temperature_min[idx]}
+        sunrise={sunrise[idx]}
+        sunset={sunset[idx]}
+        precipitation_sum={precipitation_sum[idx]}/>
       {/each}
     </div>
   {/if}
@@ -149,80 +119,18 @@
     justify-content: center;
     align-content: center;
   }
-  img {
-    height: 64px;
-    width: 64px;
-  }
-  #icons-small {
-    height: 24px;
-  }
   #header {
     border-bottom: 3px solid #000;
   }
-  #current {
-    display: grid;
-    grid-template-areas:
-      "time time time"
-      "icon icon icon"
-      ". temp ."
-      "wind wind wind";
+  #current {    
     border: 3px solid #000;
     box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.5);
     justify-self: center;
   }
-  #daily-grid {
+  #daily {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
-  }
-  #daily {
-    border: 3px solid #000;
-    margin: 10px;
-    padding: 5px;
-    display: grid;
-    grid-template-areas:
-      "date date date"
-      "code high fhigh"
-      "code low flow"
-      "code rise set"
-      ". precip precip";
-    align-items: center;
-    justify-items: start;
-  }
-  #date {
-    grid-area: date;
-    justify-self: center;
-    margin-top: 0;
-  }
-  #weathercode {
-    grid-area: code;
-  }
-  #high {
-    grid-area: high;
-    margin-bottom: 5px;
-  }
-  #low {
-    grid-area: low;
-    margin-bottom: 5px;
-  }
-  #feelsHigh {
-    grid-area: fhigh;
-    margin-bottom: 5px;
-  }
-  #feelsLow {
-    grid-area: flow;
-    margin-bottom: 5px;
-  }
-  #rise {
-    grid-area: rise;
-    margin-bottom: 5px;
-  }
-  #set {
-    grid-area: set;
-    margin-bottom: 5px;
-  }
-  #precip {
-    grid-area: precip;
   }
   #error {
     color: rgb(128, 2, 2);
