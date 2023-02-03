@@ -65,6 +65,7 @@
         .then((response) => response.json())
         .then((data) => {
           currentWeather = data.current_weather;
+          console.log(currentWeather)
           dailyWeather = data.daily;
           hourlyWeather = data.hourly
           time = [...dailyWeather.time];
