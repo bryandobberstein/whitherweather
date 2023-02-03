@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import Current from "./Current.svelte";
 
   let currentWeather = {};
   let dailyWeather = {};
@@ -65,7 +66,6 @@
         .then((response) => response.json())
         .then((data) => {
           currentWeather = data.current_weather;
-          console.log(currentWeather)
           dailyWeather = data.daily;
           hourlyWeather = data.hourly
           time = [...dailyWeather.time];
@@ -90,13 +90,7 @@
   <p id="header">Weather</p>
   {#if loaded}
     <div id="current">
-      <p id="temp">
-        <img id="icons-small" src="/icons/temperature-half-solid.svg" alt="" />
-        {currentWeather.temperature}°F
-      </p>
-      <p id="wind">Windspeed: {currentWeather.windspeed}MPH</p>
-      <p id="icon"><img src={icons[currentWeather.weathercode]} alt="" /></p>
-      <p id="time">{hourFormat.format(date.setDate(date.getDate()))}</p>
+      <Current currentWeather = {currentWeather} />
     </div>
     <div id="daily-grid">
       {#each time as day, idx}
@@ -128,11 +122,11 @@
             <span id="feelsLow">Feels like: {feelsLikeMin[idx]}°F</span>
             <span id="rise"
               ><img id="icons-small" src="/icons/sunny.svg" alt="" />
-              {hourFormat.format(new Date(sunriseTime[idx]))}</span
+              {hourFormat.format(sunriseTime[idx])}</span
             >
             <span id="set"
               ><img id="icons-small" src="/icons/moon-solid.svg" alt="" />
-              {hourFormat.format(new Date(sunsetTime[idx]))}</span
+              {hourFormat.format(sunsetTime[idx])}</span
             >
             <span id="precip"
               ><img id="icons-small" src="/icons/droplet-solid.svg" alt="" />
@@ -175,22 +169,6 @@
     border: 3px solid #000;
     box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.5);
     justify-self: center;
-  }
-  #temp {
-    grid-area: temp;
-    margin: 0;
-  }
-  #wind {
-    grid-area: wind;
-    margin: 0 0 2px 0;
-  }
-  #icon {
-    grid-area: icon;
-    margin: 0;
-  }
-  #time {
-    margin: 0;
-    grid-area: time;
   }
   #daily-grid {
     display: grid;
